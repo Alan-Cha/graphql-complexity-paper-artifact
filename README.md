@@ -1,0 +1,1 @@
+# graphql-complexity-paper-artifact
