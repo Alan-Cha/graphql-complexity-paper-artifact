@@ -1,0 +1,9 @@
+.DS_Store
+
+.env
+
+node_modules/
+
+configurations/graphql-cost-analysis/*
+configurations/graphql-query-complexity/*
+configurations/graphql-validation-complexity/*

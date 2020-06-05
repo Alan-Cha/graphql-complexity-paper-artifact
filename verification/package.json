@@ -1,0 +1,30 @@
+{
+  "name": "verification",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "verify": "npm run build && npm run test-dotenv && npm run disperse-dotenv && npm run fetch-schemas && npm run create-configurations && npm run unzip-corpuses && npm run stitch-github-corpus && npm run analyze-github-corpus && npm run analyze-yelp-corpus && npm run unzip-measured-complexity && npm run check-complexities",
+    "test-dotenv": "cd ../verification && node lib/test_dotenv.js",
+    "disperse-dotenv": "cd ../verification && node lib/disperse_dotenv.js",
+    "fetch-schemas": "cd ../graphql-schemas && npm run fetch-schemas",
+    "create-configurations": "cd ../analysis-config && npm run create-configurations",
+    "unzip-corpuses": "cd ../query-response/github && tar xvf github-query-response-part1.json.zip && tar xvf github-query-response-part2.json.zip && cd ../yelp && tar xvf yelp-query-response.json.zip && cd ..",
+    "stitch-github-corpus": "cd ../verification && node lib/stitch_github_corpus.js",
+    "analyze-github-corpus": "cd ../analysis-config && npm run analyze-corpus github ../query-response/github/github-query-response.json ../verification/analysis/github",
+    "analyze-yelp-corpus": "cd ../analysis-config && npm run analyze-corpus yelp ../query-response/yelp/yelp-query-response.json ../verification/analysis/yelp",
+    "unzip-measured-complexity": "cd ../measured-complexity && tar xvf data.tgz",
+    "check-complexities": "cd ../verification && node lib/check_complexities.js"
+  },
+  "author": "Alan Cha",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^14.0.11",
+    "@types/node-fetch": "^2.5.7",
+    "dotenv": "^8.2.0",
+    "node-fetch": "^2.6.0",
+    "typescript": "^3.9.5"
+  }
+}

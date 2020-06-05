@@ -1,0 +1,22 @@
+{
+  "name": "graphql-schemas",
+  "version": "1.0.0",
+  "description": "Fetches the Yelp and GitHub GraphQL API schemas",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "fetch-schemas": "npm run build && node lib/get-github-schema.js && node lib/get-yelp-schema.js"
+  },
+  "author": "Alan Cha",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node-fetch": "^2.5.7",
+    "dotenv": "^8.2.0",
+    "graphql": "^15.0.0",
+    "node-fetch": "^2.6.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.9.3"
+  }
+}

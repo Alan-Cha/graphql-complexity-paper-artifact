@@ -1,0 +1,27 @@
+{
+  "name": "analysis-config",
+  "version": "1.0.0",
+  "description": "Configure the open-source GraphQL complexity estimation libraries for the GitHub and Yelp APIs",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "create-configurations": "npm run build && node lib/generate_github_schema_graphql-cost-analysis.js && node lib/generate_github_schema_graphql-query-complexity.js && node lib/generate_github_schema_graphql-validation-complexity.js && node lib/generate_yelp_schema_graphql-cost-analysis.js && node lib/generate_yelp_schema_graphql-query-complexity.js",
+    "analyze-random-github-query": "npm run build && node lib/analyze_random_query.js github",
+    "analyze-random-yelp-query": "npm run build && node lib/analyze_random_query.js yelp",
+    "analyze-corpus": "npm run build && node lib/analyze_corpus.js"
+  },
+  "author": "Alan Cha",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "graphql": "^14.6.0",
+    "graphql-cost-analysis": "^1.0.3",
+    "graphql-query-complexity": "^0.4.1",
+    "graphql-validation-complexity": "^0.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^14.0.9",
+    "typescript": "^3.9.3"
+  }
+}
