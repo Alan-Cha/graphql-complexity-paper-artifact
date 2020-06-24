@@ -8,8 +8,8 @@ The results for our analysis cannot be recomputed because institutional policy p
 
 | Item                                             | Location      |
 | ------------------------------------------------ | ------------- |
-| Tarred data                                      | data.tgz      |
-| Untar tool                                       | unzip-data.pl |
+| Compressed data                                  | data.tgz      |
+| Decompress tool                                  | unzip-data.pl |
 | (Untarred) measured GitHub queries and responses | data/github/  |
 | (Untarred) measured Yelp queries and responses   | data/yelp/    |
 | Generate the heatmaps from the paper             | gen-charts.py |
@@ -56,6 +56,7 @@ Run the following command to expand it:
 After you expand the data, you can generate the charts from Figures 5 and 6 by running the following command:
 
 ```
+pip3 install -r requirements.txt
 python3 gen-charts.py
 ```
 

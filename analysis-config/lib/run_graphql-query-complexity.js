@@ -11,24 +11,20 @@ var time_utilities_1 = require("./utilities/time_utilities");
  * (libB) open-source library
  */
 function runGraphqlQueryComplexity(query, variables, schema) {
-  var ast = graphql_1.parse(query);
-  var editedAST = replace_variables_graphql_query_1.replaceVariablesQuery(
-    ast,
-    schema,
-    variables
-  );
-  var startQueryNS = time_utilities_1.getTimeInNano();
-  var complexity = graphql_query_complexity_1.getComplexity({
-    estimators: [graphql_query_complexity_1.directiveEstimator()],
-    schema: schema,
-    query: editedAST,
-  });
-  var stopQueryNS = time_utilities_1.getTimeInNano();
-  var queryProcessingNS = stopQueryNS - startQueryNS;
-  return {
-    typeComplexity: complexity,
-    queryProcessingNS: queryProcessingNS,
-  };
+    var ast = graphql_1.parse(query);
+    var editedAST = replace_variables_graphql_query_1.replaceVariablesQuery(ast, schema, variables);
+    var startQueryNS = time_utilities_1.getTimeInNano();
+    var complexity = graphql_query_complexity_1.getComplexity({
+        estimators: [graphql_query_complexity_1.directiveEstimator()],
+        schema: schema,
+        query: editedAST,
+    });
+    var stopQueryNS = time_utilities_1.getTimeInNano();
+    var queryProcessingNS = stopQueryNS - startQueryNS;
+    return {
+        typeComplexity: complexity,
+        queryProcessingNS: queryProcessingNS,
+    };
 }
 exports.runGraphqlQueryComplexity = runGraphqlQueryComplexity;
 //# sourceMappingURL=run_graphql-query-complexity.js.map

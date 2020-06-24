@@ -1,7 +1,10 @@
 import * as fs from "fs";
 import * as path from "path";
 import { buildSchema, GraphQLSchema } from "graphql";
-import { generateRandomQuery, Configuration } from "graphql-query-generator";
+import {
+  generateRandomQuery,
+  Configuration,
+} from "ibm-graphql-query-generator";
 import { getProviderMap } from "./yelp-providers";
 
 class YelpQueryGenerator {

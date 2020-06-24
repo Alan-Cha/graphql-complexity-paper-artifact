@@ -1,7 +1,7 @@
 import * as fetch from "node-fetch";
 
-import { ProviderMap } from "graphql-query-generator/lib/provide-variables";
-import { matchVarName } from "graphql-query-generator";
+import { ProviderMap } from "ibm-graphql-query-generator/lib/provide-variables";
+import { matchVarName } from "ibm-graphql-query-generator";
 
 /**
  * Given a GraphQL query, run it against the GitHub API and extract the data
@@ -26,7 +26,7 @@ export function runGitHubGraphQLQuery(query: any, gitHubAccessToken: string) {
         } else {
           throw new Error(
             `Unsuccessful GitHub API call. Status: ${res.status} ${res.statusText}`
-          );
+          );        
         }
       })
       .then((json: any) => {
@@ -667,7 +667,7 @@ export function getProviderMap(gitHubAccessToken: string) {
         if (userLoginKey) {
           const userLogin = existingVars[userLoginKey];
           return userRepos.find((repo) => repo.userlogin === userLogin)
-            ?.repository;
+          ?.repository;
         }
         // If there is already an organization in the variables, return matching repository:
         const organizationKey = matchVarName(
@@ -677,7 +677,7 @@ export function getProviderMap(gitHubAccessToken: string) {
         if (organizationKey) {
           const organization = existingVars[organizationKey];
           return orgRepos.find((repo) => repo.organization === organization)
-            ?.repository;
+          ?.repository;
         }
         // If there is already an owner in the variables, return matching repository:
         const ownerKey = matchVarName(
@@ -688,8 +688,8 @@ export function getProviderMap(gitHubAccessToken: string) {
           const owner = existingVars[ownerKey];
           return allRepos.find(
             (repo) =>
-              (repo as UserRepo).userlogin === owner ||
-              (repo as OrgRepo).organization === owner
+            (repo as UserRepo).userlogin === owner ||
+            (repo as OrgRepo).organization === owner
           )?.repository;
         }
         return allRepos[Math.floor(Math.random() * allRepos.length)].repository;

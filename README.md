@@ -4,9 +4,7 @@ Welcome to the artifact for ESEC/FSE'20 research paper, ["A Principled Approach 
 
 ## Table of contents
 
-This artifact contains the items discussed in paper.
-
-The sub-directories contain their own README.md files to clarify their contents.
+Each sub-directories contains its own `README.md` files that clarifies its contents.
 
 | Item                                          | Description                                                                                                                             | Location                                     |
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
@@ -28,7 +26,7 @@ The sub-directory [verification/](verification/) contains a script that will rec
 
 ## Reproducing the paper results
 
-The sub-directory [measured-complexity/](measured-complexity/) contains all the data (complexity measures for the opensource libraries and our own solution), and a tool to regenerate the plots.
+The sub-directory [measured-complexity/](measured-complexity/) contains all the data (complexity measures for the open-source libraries and our own solution), and a tool to regenerate the plots.
 
 The sub-directory [query-response/](query-response/) contains an anonymized version of the corpus used for these experiments.
 

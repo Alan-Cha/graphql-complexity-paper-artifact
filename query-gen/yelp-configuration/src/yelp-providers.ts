@@ -1,5 +1,5 @@
 import * as fetch from "node-fetch";
-import { ProviderMap } from "graphql-query-generator/lib/provide-variables";
+import { ProviderMap } from "ibm-graphql-query-generator/lib/provide-variables";
 
 export function runYelpGraphQLQuery(query: string, yelpAccessToken: string) {
   return new Promise((resolve, reject) => {
@@ -22,8 +22,7 @@ export function runYelpGraphQLQuery(query: string, yelpAccessToken: string) {
         } else {
           throw new Error(
             `Unsuccessful Yelp API call. Status: ${res.status} ${res.statusText}`
-          );
-        }
+          );        }
       })
       .then((json) => {
         resolve(json.data);
