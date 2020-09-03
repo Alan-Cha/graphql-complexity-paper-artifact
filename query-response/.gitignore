@@ -1,0 +1,8 @@
+.DS_Store
+
+!github/github-query-response-part1.tgz
+!github/github-query-response-part2.tgz
+!yelp/yelp-query-response.tgz
+
+github/
+yelp/
