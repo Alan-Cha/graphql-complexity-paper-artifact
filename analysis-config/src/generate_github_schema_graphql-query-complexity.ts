@@ -4,6 +4,7 @@ import {
   parse,
   print,
   visit,
+
   ArgumentNode,
   NamedTypeNode,
   DefinitionNode,
@@ -15,185 +16,227 @@ import {
   ScalarTypeDefinitionNode,
   TypeNode,
   EnumTypeDefinitionNode,
-} from "graphql";
+  StringValueNode
+} from 'graphql'
 
-import * as fs from "fs";
+import * as fs from 'fs'
 
 /**
  * Cost directive definition
- *
+ * 
  * directive @complexity(multipliers: [String!], value: Int!) on FIELD_DEFINITION
  */
 const costDirectiveDefinition: DirectiveDefinitionNode = {
-  kind: "DirectiveDefinition",
+  kind: 'DirectiveDefinition',
   name: {
-    kind: "Name",
-    value: "complexity",
+    kind: 'Name',
+    value: 'complexity'
   },
   arguments: [
     {
-      kind: "InputValueDefinition",
+      kind: 'InputValueDefinition',
       name: {
-        kind: "Name",
-        value: "multipliers",
+        kind: 'Name',
+        value: 'multipliers'
       },
       type: {
-        kind: "ListType",
+        kind: 'ListType',
         type: {
           kind: "NonNullType",
           type: {
-            kind: "NamedType",
+            kind: 'NamedType',
             name: {
-              kind: "Name",
-              value: "String",
-            },
-          },
-        },
-      },
+              kind: 'Name',
+              value: 'String'
+            }
+          }
+        }
+      }
     },
     {
-      kind: "InputValueDefinition",
+      kind: 'InputValueDefinition',
       name: {
-        kind: "Name",
-        value: "value",
+        kind: 'Name',
+        value: 'value'
       },
       type: {
         kind: "NonNullType",
         type: {
-          kind: "NamedType",
+          kind: 'NamedType',
           name: {
-            kind: "Name",
-            value: "Int",
-          },
-        },
-      },
-    },
+            kind: 'Name',
+            value: 'Int'
+          }
+        }
+      }
+    }
   ],
   repeatable: false,
   locations: [
     {
-      kind: "Name",
-      value: "FIELD_DEFINITION",
-    },
-  ],
-};
+      kind: 'Name',
+      value: 'FIELD_DEFINITION'
+    }
+  ]
+}
 
 /**
  * Directive describing the multipliers
- *
- * @cost(multipliers: ["first", "last"])
+ * 
+ * e.g. @cost(multipliers: [ ... ])
  */
-const firstLastDirective: ArgumentNode = {
-  kind: "Argument",
-  value: {
-    kind: "ListValue",
-    values: [
-      {
-        kind: "StringValue",
-        value: "first",
-      },
-      {
-        kind: "StringValue",
-        value: "last",
-      },
-    ],
-  },
-  name: {
-    kind: "Name",
-    value: "multipliers",
-  },
-};
+function multiplierArgument(values: StringValueNode[]): ArgumentNode {
+ return {
+    kind: 'Argument',
+    value: {
+      kind: 'ListValue',
+      values
+    },
+    name: {
+      kind: 'Name', 
+      value: 'multipliers'
+    }
+  }
+  
+}
 
 /**
  * Directive describing the complexity
- *
+ * 
  * @cost(value: 1)
  */
 function getValueDirective(complexity: number): ArgumentNode {
   return {
-    kind: "Argument",
+    kind: 'Argument',
     value: {
-      kind: "IntValue",
-      value: `${complexity}`,
+      kind: 'IntValue',
+      value: `${complexity}`
     },
     name: {
-      kind: "Name",
-      value: "value",
-    },
-  };
+      kind: 'Name', 
+      value: 'value'
+    }
+  }
 }
 
 /**
  * Utility function used to get the named type node from a type node
  */
 function unwrapTypeNode(node: TypeNode): NamedTypeNode {
-  if (node.kind === "NamedType") {
-    return node;
+  if (node.kind === 'NamedType') {
+    return node
   } else {
-    return unwrapTypeNode(node.type);
+    return unwrapTypeNode(node.type)
   }
 }
 
-const ast = parse(
-  fs.readFileSync("../graphql-schemas/schemas/github/github.graphql", "utf8")
-);
+const ast = parse(fs.readFileSync('../graphql-schemas/schemas/github/github.graphql', 'utf8'))
 
-const scalarNames = ["Int", "Float", "String", "ID", "Boolean"];
+const scalarNames = ['Int', 'Float', 'String', 'ID', 'Boolean']
 // Add custom defined scalars to the scalarNames list
 visit(ast, {
   ScalarTypeDefinition: {
     enter(node: ScalarTypeDefinitionNode) {
-      scalarNames.push(node.name.value);
-    },
+      scalarNames.push(node.name.value)
+    }
   },
   EnumTypeDefinition: {
     enter(node: EnumTypeDefinitionNode) {
-      scalarNames.push(node.name.value);
-    },
-  },
-});
+      scalarNames.push(node.name.value)
+    }
+  }
+})
 
 // Created edited schema with directives
 const editedAst = visit(ast, {
   Document: {
     enter(node: DocumentNode) {
       // Copy existing definitions
-      const definitions: DefinitionNode[] = [];
+      const definitions: DefinitionNode[] = []
       if (Array.isArray(node.definitions)) {
         node.definitions.forEach((definition) => {
-          definitions.push(definition);
-        });
+          definitions.push(definition)
+        })
       }
 
       // Add cost directive definition to definitions
-      definitions.push(costDirectiveDefinition);
+      definitions.push(costDirectiveDefinition)
 
       const edited: DocumentNode = {
         ...node,
         ...{
-          definitions,
-        },
-      };
+          definitions
+        }
+      }
 
-      return edited;
-    },
+      return edited
+    }
   },
   FieldDefinition: {
-    enter(node: FieldDefinitionNode) {
-      const typeName = unwrapTypeNode(node.type).name.value;
+    enter(node: FieldDefinitionNode, key, parent, path, ancestors) {
+      const parentType = ancestors[ancestors.length - 1] as ObjectTypeDefinitionNode
+
+      const parentTypeName = parentType.name.value
+      const fieldName = node.name.value
+      const typeName = unwrapTypeNode(node.type).name.value
 
       const complexityDirective: any = {
-        kind: "Directive",
+        kind: 'Directive', 
         name: {
-          kind: "Name",
-          value: "complexity",
+          kind: 'Name', 
+          value: 'complexity'
         },
-        arguments: [],
-      };
+        arguments: []
+      }
+
+      // Add multipliers directive
+      // NESTED - BLOW-UP LIKELY!
+      if (fieldName === 'relatedTopics') {
+        complexityDirective.arguments.push(multiplierArgument(
+          [ 
+            {
+              kind: 'StringValue',
+              value: 'first'
+            }
+          ]
+        ))
+
+      // Gist.files
+      } else if (parentTypeName === 'Gist' && fieldName === 'files') {
+        complexityDirective.arguments.push(multiplierArgument(
+          [ 
+            {
+              kind: 'StringValue',
+              value: 'limit'
+            }
+          ]
+        ))
+
+      // commit-, issue-, pullRequest-, pullRequestReview-...
+      } else if (fieldName.endsWith('ContributionsByRepository')) {
+        complexityDirective.arguments.push(multiplierArgument(
+          [ 
+            {
+              kind: 'StringValue',
+              value: 'maxRepositories'
+            }
+          ]
+        ))
 
       // Add a first/last argument directive if the field is a connection type
-      if (typeName.endsWith("Connection")) {
-        complexityDirective.arguments.push(firstLastDirective);
+      } else if (typeName.endsWith('Connection')) {
+        complexityDirective.arguments.push(multiplierArgument(
+          [
+            {
+              kind: 'StringValue',
+              value: 'first'
+            },
+            {
+              kind: 'StringValue',
+              value: 'last'
+            }
+          ]
+        ))
       }
 
       /**
@@ -203,38 +246,35 @@ const editedAst = visit(ast, {
        * calculation behaves unpredictably.
        */
       if (!scalarNames.includes(typeName)) {
-        complexityDirective.arguments.push(getValueDirective(1));
+        complexityDirective.arguments.push(getValueDirective(1))
       } else {
-        complexityDirective.arguments.push(getValueDirective(0));
+        complexityDirective.arguments.push(getValueDirective(0))
       }
 
       // Finalize newly added directives
       if (complexityDirective.arguments.length > 0) {
         // Copy existing directives
-        const directives: DirectiveNode[] = [];
+        const directives: DirectiveNode[] = []
         if (Array.isArray(node.directives)) {
           node.directives.forEach((directive) => {
-            directives.push(directive);
-          });
+            directives.push(directive)
+          })
         }
 
         // Add new directives
-        directives.push(complexityDirective);
-
+        directives.push(complexityDirective)
+  
         const edited: FieldDefinitionNode = {
           ...node,
           ...{
-            directives,
-          },
-        };
-
-        return edited;
+            directives
+          }
+        }
+  
+        return edited
       }
-    },
-  },
-});
+    }
+  }
+})
 
-fs.writeFileSync(
-  "./configurations/graphql-query-complexity/graphql-query-complexity_github.graphql",
-  print(editedAst)
-);
+fs.writeFileSync('./configurations/graphql-query-complexity/graphql-query-complexity_github.graphql', print(editedAst))

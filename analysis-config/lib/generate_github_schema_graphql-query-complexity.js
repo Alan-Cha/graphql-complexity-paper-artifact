@@ -39,83 +39,76 @@ var fs = __importStar(require("fs"));
  * directive @complexity(multipliers: [String!], value: Int!) on FIELD_DEFINITION
  */
 var costDirectiveDefinition = {
-    kind: "DirectiveDefinition",
+    kind: 'DirectiveDefinition',
     name: {
-        kind: "Name",
-        value: "complexity",
+        kind: 'Name',
+        value: 'complexity'
     },
     arguments: [
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "multipliers",
+                kind: 'Name',
+                value: 'multipliers'
             },
             type: {
-                kind: "ListType",
+                kind: 'ListType',
                 type: {
                     kind: "NonNullType",
                     type: {
-                        kind: "NamedType",
+                        kind: 'NamedType',
                         name: {
-                            kind: "Name",
-                            value: "String",
-                        },
-                    },
-                },
-            },
+                            kind: 'Name',
+                            value: 'String'
+                        }
+                    }
+                }
+            }
         },
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "value",
+                kind: 'Name',
+                value: 'value'
             },
             type: {
                 kind: "NonNullType",
                 type: {
-                    kind: "NamedType",
+                    kind: 'NamedType',
                     name: {
-                        kind: "Name",
-                        value: "Int",
-                    },
-                },
-            },
-        },
+                        kind: 'Name',
+                        value: 'Int'
+                    }
+                }
+            }
+        }
     ],
     repeatable: false,
     locations: [
         {
-            kind: "Name",
-            value: "FIELD_DEFINITION",
-        },
-    ],
+            kind: 'Name',
+            value: 'FIELD_DEFINITION'
+        }
+    ]
 };
 /**
  * Directive describing the multipliers
  *
- * @cost(multipliers: ["first", "last"])
+ * e.g. @cost(multipliers: [ ... ])
  */
-var firstLastDirective = {
-    kind: "Argument",
-    value: {
-        kind: "ListValue",
-        values: [
-            {
-                kind: "StringValue",
-                value: "first",
-            },
-            {
-                kind: "StringValue",
-                value: "last",
-            },
-        ],
-    },
-    name: {
-        kind: "Name",
-        value: "multipliers",
-    },
-};
+function multiplierArgument(values) {
+    return {
+        kind: 'Argument',
+        value: {
+            kind: 'ListValue',
+            values: values
+        },
+        name: {
+            kind: 'Name',
+            value: 'multipliers'
+        }
+    };
+}
 /**
  * Directive describing the complexity
  *
@@ -123,42 +116,42 @@ var firstLastDirective = {
  */
 function getValueDirective(complexity) {
     return {
-        kind: "Argument",
+        kind: 'Argument',
         value: {
-            kind: "IntValue",
-            value: "" + complexity,
+            kind: 'IntValue',
+            value: "" + complexity
         },
         name: {
-            kind: "Name",
-            value: "value",
-        },
+            kind: 'Name',
+            value: 'value'
+        }
     };
 }
 /**
  * Utility function used to get the named type node from a type node
  */
 function unwrapTypeNode(node) {
-    if (node.kind === "NamedType") {
+    if (node.kind === 'NamedType') {
         return node;
     }
     else {
         return unwrapTypeNode(node.type);
     }
 }
-var ast = graphql_1.parse(fs.readFileSync("../graphql-schemas/schemas/github/github.graphql", "utf8"));
-var scalarNames = ["Int", "Float", "String", "ID", "Boolean"];
+var ast = graphql_1.parse(fs.readFileSync('../graphql-schemas/schemas/github/github.graphql', 'utf8'));
+var scalarNames = ['Int', 'Float', 'String', 'ID', 'Boolean'];
 // Add custom defined scalars to the scalarNames list
 graphql_1.visit(ast, {
     ScalarTypeDefinition: {
         enter: function (node) {
             scalarNames.push(node.name.value);
-        },
+        }
     },
     EnumTypeDefinition: {
         enter: function (node) {
             scalarNames.push(node.name.value);
-        },
-    },
+        }
+    }
 });
 // Created edited schema with directives
 var editedAst = graphql_1.visit(ast, {
@@ -174,25 +167,65 @@ var editedAst = graphql_1.visit(ast, {
             // Add cost directive definition to definitions
             definitions.push(costDirectiveDefinition);
             var edited = __assign(__assign({}, node), {
-                definitions: definitions,
+                definitions: definitions
             });
             return edited;
-        },
+        }
     },
     FieldDefinition: {
-        enter: function (node) {
+        enter: function (node, key, parent, path, ancestors) {
+            var parentType = ancestors[ancestors.length - 1];
+            var parentTypeName = parentType.name.value;
+            var fieldName = node.name.value;
             var typeName = unwrapTypeNode(node.type).name.value;
             var complexityDirective = {
-                kind: "Directive",
+                kind: 'Directive',
                 name: {
-                    kind: "Name",
-                    value: "complexity",
+                    kind: 'Name',
+                    value: 'complexity'
                 },
-                arguments: [],
+                arguments: []
             };
-            // Add a first/last argument directive if the field is a connection type
-            if (typeName.endsWith("Connection")) {
-                complexityDirective.arguments.push(firstLastDirective);
+            // Add multipliers directive
+            // NESTED - BLOW-UP LIKELY!
+            if (fieldName === 'relatedTopics') {
+                complexityDirective.arguments.push(multiplierArgument([
+                    {
+                        kind: 'StringValue',
+                        value: 'first'
+                    }
+                ]));
+                // Gist.files
+            }
+            else if (parentTypeName === 'Gist' && fieldName === 'files') {
+                complexityDirective.arguments.push(multiplierArgument([
+                    {
+                        kind: 'StringValue',
+                        value: 'limit'
+                    }
+                ]));
+                // commit-, issue-, pullRequest-, pullRequestReview-...
+            }
+            else if (fieldName.endsWith('ContributionsByRepository')) {
+                complexityDirective.arguments.push(multiplierArgument([
+                    {
+                        kind: 'StringValue',
+                        value: 'maxRepositories'
+                    }
+                ]));
+                // Add a first/last argument directive if the field is a connection type
+            }
+            else if (typeName.endsWith('Connection')) {
+                complexityDirective.arguments.push(multiplierArgument([
+                    {
+                        kind: 'StringValue',
+                        value: 'first'
+                    },
+                    {
+                        kind: 'StringValue',
+                        value: 'last'
+                    }
+                ]));
             }
             /**
              * Add a value directive to all fields
@@ -218,12 +251,12 @@ var editedAst = graphql_1.visit(ast, {
                 // Add new directives
                 directives_1.push(complexityDirective);
                 var edited = __assign(__assign({}, node), {
-                    directives: directives_1,
+                    directives: directives_1
                 });
                 return edited;
             }
-        },
-    },
+        }
+    }
 });
-fs.writeFileSync("./configurations/graphql-query-complexity/graphql-query-complexity_github.graphql", graphql_1.print(editedAst));
+fs.writeFileSync('./configurations/graphql-query-complexity/graphql-query-complexity_github.graphql', graphql_1.print(editedAst));
 //# sourceMappingURL=generate_github_schema_graphql-query-complexity.js.map
