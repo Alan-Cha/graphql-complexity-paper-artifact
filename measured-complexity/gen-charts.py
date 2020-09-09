@@ -141,7 +141,7 @@ def plotComplexityData(complexityData):
     # We use our GH data twice, so just generate the charts x2 ??
     if complexityData.calcOrigin == 'Our':
       xlabels = ['Actual response size', 'Actual (response) cxty']
-      ylabels = ['Pred. response size', 'Pred. (response) cxty']
+      ylabels = ['Pred. response size', 'Pred. (query) cxty']
       chartNicknames = ['RQ5', 'Standard']
     else:
       xlabels = ['Actual response size']
