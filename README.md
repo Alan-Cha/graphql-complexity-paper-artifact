@@ -8,7 +8,7 @@ Each sub-directories contains its own `README.md` files that clarifies its conte
 
 | Item                                          | Description                                                                                                                             | Location                                     |
 | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| GraphQL query-response corpus                 | The 10,000 unique queries we generated for GitHub (5,000) and Yelp (5,000), and the responses from those service providers (anonymized) | [query-response/](query-response/)           |
+| GraphQL query-response corpus                 | The 10,000 unique (anonymized) query-response pairs from GitHub and Yelp | [query-response/](query-response/)           |
 | Configuration of static analyses              | Our configuration of the static analyses (our own and those we compared against)                                                        | [analysis-config/](analysis-config/)         |
 | Complexity measures for queries and responses | Data used to generate Figures 5 and 6, plus charts generator                                                                            | [measured-complexity/](measured-complexity/) |
 | Novel GraphQL query generator                 | Configuration details and link to the open-source tool                                                                                  | [query-gen/](query-gen/)                     |
