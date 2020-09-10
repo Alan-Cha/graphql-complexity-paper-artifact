@@ -261,11 +261,11 @@ def plotComplexityData(complexityData):
       plt.colorbar()
 
       if complexityData.api == 'github' and (complexityData.calcOrigin == 'libB' or complexityData.calcOrigin == 'libC'):
-        textXPos = 8
+        textXPos = 0.05 * xAxLim
         textYPos = 0.9 * yAxLim
       else:
-        textXPos = 0.2 * xAxLim
-        textYPos = 8
+        textXPos = 0.25 * xAxLim
+        textYPos = 0.05 * yAxLim
       
       if percResponsesShown < 100 or percPredFit < 100:
         ax.text(textXPos, textYPos, '{}% resp., {}% of preds.'.format(percResponsesShown, percPredFit), fontsize=inFigureText_fontsize)
