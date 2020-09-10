@@ -15,6 +15,10 @@ from pprint import pprint
 import os
 import os.path
 
+# Settings to prevent using Type 3 font
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
+
 """## Globals"""
 
 APIs = ['github', 'yelp']
@@ -104,7 +108,7 @@ for api in APIs:
 
 """## Plot"""
 
-font = {'family' : 'normal',
+font = {'family' : 'sans-serif',
         'weight' : 'normal',
         'size'   : 14}
 matplotlib.rc('font', **font)
@@ -134,7 +138,7 @@ def plotComplexityData(complexityData):
     #else:
     axlabel_fontsize = 20
     ticklabel_fontsize = 18
-    inFigureText_fontsize = 18
+    inFigureText_fontsize = 14
     nXTicks = 3
     nYTicks = 3
 
