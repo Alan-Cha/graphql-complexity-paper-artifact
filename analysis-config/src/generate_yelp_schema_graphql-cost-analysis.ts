@@ -15,9 +15,9 @@ import {
   TypeNode,
   EnumTypeDefinitionNode,
   ArgumentNode,
-} from "graphql";
+} from 'graphql'
 
-import * as fs from "fs";
+import * as fs from 'fs'
 
 /**
  * Cost directive definition
@@ -25,54 +25,54 @@ import * as fs from "fs";
  * directive @cost(multipliers: [String], useMultipliers: Boolean, complexity: Int) on OBJECT | FIELD_DEFINITION
  */
 const costDirectiveDefinition: DirectiveDefinitionNode = {
-  kind: "DirectiveDefinition",
+  kind: 'DirectiveDefinition',
   name: {
-    kind: "Name",
-    value: "cost",
+    kind: 'Name',
+    value: 'cost',
   },
   arguments: [
     {
-      kind: "InputValueDefinition",
+      kind: 'InputValueDefinition',
       name: {
-        kind: "Name",
-        value: "multipliers",
+        kind: 'Name',
+        value: 'multipliers',
       },
       type: {
-        kind: "ListType",
+        kind: 'ListType',
         type: {
-          kind: "NamedType",
+          kind: 'NamedType',
           name: {
-            kind: "Name",
-            value: "String",
+            kind: 'Name',
+            value: 'String',
           },
         },
       },
     },
     {
-      kind: "InputValueDefinition",
+      kind: 'InputValueDefinition',
       name: {
-        kind: "Name",
-        value: "useMultipliers",
+        kind: 'Name',
+        value: 'useMultipliers',
       },
       type: {
-        kind: "NamedType",
+        kind: 'NamedType',
         name: {
-          kind: "Name",
-          value: "Boolean",
+          kind: 'Name',
+          value: 'Boolean',
         },
       },
     },
     {
-      kind: "InputValueDefinition",
+      kind: 'InputValueDefinition',
       name: {
-        kind: "Name",
-        value: "complexity",
+        kind: 'Name',
+        value: 'complexity',
       },
       type: {
-        kind: "NamedType",
+        kind: 'NamedType',
         name: {
-          kind: "Name",
-          value: "Int",
+          kind: 'Name',
+          value: 'Int',
         },
       },
     },
@@ -80,37 +80,37 @@ const costDirectiveDefinition: DirectiveDefinitionNode = {
   repeatable: false,
   locations: [
     {
-      kind: "Name",
-      value: "OBJECT",
+      kind: 'Name',
+      value: 'OBJECT',
     },
     {
-      kind: "Name",
-      value: "FIELD_DEFINITION",
+      kind: 'Name',
+      value: 'FIELD_DEFINITION',
     },
   ],
-};
+}
 
 /**
  * Should produce a directive like the following:
  *
- * @cost(multipliers: ["limit"])
+ * @cost(multipliers: ['limit'])
  */
 const limitArgumentDirective: ArgumentNode = {
-  kind: "Argument",
+  kind: 'Argument',
   value: {
-    kind: "ListValue",
+    kind: 'ListValue',
     values: [
       {
-        kind: "StringValue",
-        value: "limit",
+        kind: 'StringValue',
+        value: 'limit',
       },
     ],
   },
   name: {
-    kind: "Name",
-    value: "multipliers",
+    kind: 'Name',
+    value: 'multipliers',
   },
-};
+}
 
 /**
  * Directive describing the complexity
@@ -119,140 +119,140 @@ const limitArgumentDirective: ArgumentNode = {
  */
 function getComplexityDirective(complexity: number): ArgumentNode {
   return {
-    kind: "Argument",
+    kind: 'Argument',
     value: {
-      kind: "IntValue",
+      kind: 'IntValue',
       value: `${complexity}`,
     },
     name: {
-      kind: "Name",
-      value: "complexity",
+      kind: 'Name',
+      value: 'complexity',
     },
-  };
+  }
 }
 
 /**
  * Utility function used to get the named type node from a type node
  */
 function unwrapTypeNode(node: TypeNode): NamedTypeNode {
-  if (node.kind === "NamedType") {
-    return node;
+  if (node.kind === 'NamedType') {
+    return node
   } else {
-    return unwrapTypeNode(node.type);
+    return unwrapTypeNode(node.type)
   }
 }
 
 const ast = parse(
-  fs.readFileSync("../graphql-schemas/schemas/yelp/yelp.graphql", "utf8")
-);
+  fs.readFileSync('../graphql-schemas/schemas/yelp/yelp.graphql', 'utf8')
+)
 
-const scalarNames = ["Int", "Float", "String", "ID", "Boolean"];
+const scalarNames = ['Int', 'Float', 'String', 'ID', 'Boolean']
 // Add custom defined scalar names
 visit(ast, {
   ScalarTypeDefinition: {
     enter(node: ScalarTypeDefinitionNode) {
-      scalarNames.push(node.name.value);
+      scalarNames.push(node.name.value)
     },
   },
   EnumTypeDefinition: {
     enter(node: EnumTypeDefinitionNode) {
-      scalarNames.push(node.name.value);
+      scalarNames.push(node.name.value)
     },
   },
-});
+})
 
 // Created edited schema with directives
 const editedAst = visit(ast, {
   Document: {
     enter(node: DocumentNode) {
       // Copy existing definitions
-      const definitions: DefinitionNode[] = [];
+      const definitions: DefinitionNode[] = []
       if (Array.isArray(node.definitions)) {
         node.definitions.forEach((definition) => {
-          definitions.push(definition);
-        });
+          definitions.push(definition)
+        })
       }
 
       // Add cost directive definition to definitions
-      definitions.push(costDirectiveDefinition);
+      definitions.push(costDirectiveDefinition)
 
       const edited: DocumentNode = {
         ...node,
         ...{
           definitions,
         },
-      };
+      }
 
-      return edited;
+      return edited
     },
   },
   FieldDefinition: {
     enter(node: FieldDefinitionNode, key, parent, path, ancestors) {
       const parentType = ancestors[
         ancestors.length - 1
-      ] as ObjectTypeDefinitionNode;
+      ] as ObjectTypeDefinitionNode
 
-      const parentTypeName = parentType.name.value;
-      const fieldName = node.name.value;
-      const typeName = unwrapTypeNode(node.type).name.value;
+      const parentTypeName = parentType.name.value
+      const fieldName = node.name.value
+      const typeName = unwrapTypeNode(node.type).name.value
 
       const complexityDirective: any = {
-        kind: "Directive",
+        kind: 'Directive',
         name: {
-          kind: "Name",
-          value: "cost",
+          kind: 'Name',
+          value: 'cost',
         },
         arguments: [],
-      };
+      }
 
       // Add a limit argument directive
-      if (parentTypeName === "Query") {
+      if (parentTypeName === 'Query') {
         if (
-          ["business_match", "reviews", "search", "event_search"].includes(
+          ['business_match', 'reviews', 'search', 'event_search'].includes(
             fieldName
           )
         ) {
-          complexityDirective.arguments.push(limitArgumentDirective);
+          complexityDirective.arguments.push(limitArgumentDirective)
         }
       }
 
       // Add a limit argument directive
-      if (parentTypeName === "Business" && fieldName === "reviews") {
-        complexityDirective.arguments.push(limitArgumentDirective);
+      if (parentTypeName === 'Business' && fieldName === 'reviews') {
+        complexityDirective.arguments.push(limitArgumentDirective)
       }
 
       // Add a complexity directive to all fields that are non-scalar
       if (!scalarNames.includes(typeName)) {
-        complexityDirective.arguments.push(getComplexityDirective(1));
+        complexityDirective.arguments.push(getComplexityDirective(1))
       }
 
       // Finalize newly added directives
       if (complexityDirective.arguments.length > 0) {
         // Copy existing directives
-        const directives: DirectiveNode[] = [];
+        const directives: DirectiveNode[] = []
         if (Array.isArray(node.directives)) {
           node.directives.forEach((directive) => {
-            directives.push(directive);
-          });
+            directives.push(directive)
+          })
         }
 
         // Add new directives
-        directives.push(complexityDirective);
+        directives.push(complexityDirective)
 
         const edited: FieldDefinitionNode = {
           ...node,
           ...{
             directives,
           },
-        };
+        }
 
-        return edited;
+        return edited
       }
     },
   },
-});
+})
 
 fs.writeFileSync(
-  "./configurations/graphql-cost-analysis/graphql-cost-analysis_yelp.graphql",
+  './configurations/graphql-cost-analysis/graphql-cost-analysis_yelp.graphql',
   print(editedAst)
-);
+)

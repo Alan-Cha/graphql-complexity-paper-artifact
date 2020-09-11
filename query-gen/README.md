@@ -90,4 +90,4 @@ All other options are the same as the GitHub configuration.
 
 ### Providers
 
-Unfortunately, we cannot share the exact providers that we used for our experiment for a similar reason why we needed to anonymize our query-response corpus, they contain personal information. However, we have provided scripts in [github-configuration/](github-configuration/) and [yelp-configuration/](yelp-configuration/) that will dynamically create providers by querying the Github and Yelp APIs, which are exactly the same in structure as the ones that we used in our experiment.
+Unfortunately, we cannot share the exact providers that we used for our experiment for a similar reason why we needed to anonymize our query-response corpus, they contain personal information. However, we have provided scripts in [github-configuration/](github-configuration/) and [yelp-configuration/](yelp-configuration/) that will dynamically create providers by querying the GitHub and Yelp APIs, which are exactly the same in structure as the ones that we used in our experiment.

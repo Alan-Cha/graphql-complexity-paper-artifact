@@ -39,54 +39,54 @@ var fs = __importStar(require("fs"));
  * directive @cost(multipliers: [String], useMultipliers: Boolean, complexity: Int) on OBJECT | FIELD_DEFINITION
  */
 var costDirectiveDefinition = {
-    kind: "DirectiveDefinition",
+    kind: 'DirectiveDefinition',
     name: {
-        kind: "Name",
-        value: "cost",
+        kind: 'Name',
+        value: 'cost',
     },
     arguments: [
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "multipliers",
+                kind: 'Name',
+                value: 'multipliers',
             },
             type: {
-                kind: "ListType",
+                kind: 'ListType',
                 type: {
-                    kind: "NamedType",
+                    kind: 'NamedType',
                     name: {
-                        kind: "Name",
-                        value: "String",
+                        kind: 'Name',
+                        value: 'String',
                     },
                 },
             },
         },
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "useMultipliers",
+                kind: 'Name',
+                value: 'useMultipliers',
             },
             type: {
-                kind: "NamedType",
+                kind: 'NamedType',
                 name: {
-                    kind: "Name",
-                    value: "Boolean",
+                    kind: 'Name',
+                    value: 'Boolean',
                 },
             },
         },
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "complexity",
+                kind: 'Name',
+                value: 'complexity',
             },
             type: {
-                kind: "NamedType",
+                kind: 'NamedType',
                 name: {
-                    kind: "Name",
-                    value: "Int",
+                    kind: 'Name',
+                    value: 'Int',
                 },
             },
         },
@@ -94,34 +94,34 @@ var costDirectiveDefinition = {
     repeatable: false,
     locations: [
         {
-            kind: "Name",
-            value: "OBJECT",
+            kind: 'Name',
+            value: 'OBJECT',
         },
         {
-            kind: "Name",
-            value: "FIELD_DEFINITION",
+            kind: 'Name',
+            value: 'FIELD_DEFINITION',
         },
     ],
 };
 /**
  * Should produce a directive like the following:
  *
- * @cost(multipliers: ["limit"])
+ * @cost(multipliers: ['limit'])
  */
 var limitArgumentDirective = {
-    kind: "Argument",
+    kind: 'Argument',
     value: {
-        kind: "ListValue",
+        kind: 'ListValue',
         values: [
             {
-                kind: "StringValue",
-                value: "limit",
+                kind: 'StringValue',
+                value: 'limit',
             },
         ],
     },
     name: {
-        kind: "Name",
-        value: "multipliers",
+        kind: 'Name',
+        value: 'multipliers',
     },
 };
 /**
@@ -131,14 +131,14 @@ var limitArgumentDirective = {
  */
 function getComplexityDirective(complexity) {
     return {
-        kind: "Argument",
+        kind: 'Argument',
         value: {
-            kind: "IntValue",
+            kind: 'IntValue',
             value: "" + complexity,
         },
         name: {
-            kind: "Name",
-            value: "complexity",
+            kind: 'Name',
+            value: 'complexity',
         },
     };
 }
@@ -146,15 +146,15 @@ function getComplexityDirective(complexity) {
  * Utility function used to get the named type node from a type node
  */
 function unwrapTypeNode(node) {
-    if (node.kind === "NamedType") {
+    if (node.kind === 'NamedType') {
         return node;
     }
     else {
         return unwrapTypeNode(node.type);
     }
 }
-var ast = graphql_1.parse(fs.readFileSync("../graphql-schemas/schemas/yelp/yelp.graphql", "utf8"));
-var scalarNames = ["Int", "Float", "String", "ID", "Boolean"];
+var ast = graphql_1.parse(fs.readFileSync('../graphql-schemas/schemas/yelp/yelp.graphql', 'utf8'));
+var scalarNames = ['Int', 'Float', 'String', 'ID', 'Boolean'];
 // Add custom defined scalar names
 graphql_1.visit(ast, {
     ScalarTypeDefinition: {
@@ -194,21 +194,21 @@ var editedAst = graphql_1.visit(ast, {
             var fieldName = node.name.value;
             var typeName = unwrapTypeNode(node.type).name.value;
             var complexityDirective = {
-                kind: "Directive",
+                kind: 'Directive',
                 name: {
-                    kind: "Name",
-                    value: "cost",
+                    kind: 'Name',
+                    value: 'cost',
                 },
                 arguments: [],
             };
             // Add a limit argument directive
-            if (parentTypeName === "Query") {
-                if (["business_match", "reviews", "search", "event_search"].includes(fieldName)) {
+            if (parentTypeName === 'Query') {
+                if (['business_match', 'reviews', 'search', 'event_search'].includes(fieldName)) {
                     complexityDirective.arguments.push(limitArgumentDirective);
                 }
             }
             // Add a limit argument directive
-            if (parentTypeName === "Business" && fieldName === "reviews") {
+            if (parentTypeName === 'Business' && fieldName === 'reviews') {
                 complexityDirective.arguments.push(limitArgumentDirective);
             }
             // Add a complexity directive to all fields that are non-scalar
@@ -234,5 +234,5 @@ var editedAst = graphql_1.visit(ast, {
         },
     },
 });
-fs.writeFileSync("./configurations/graphql-cost-analysis/graphql-cost-analysis_yelp.graphql", graphql_1.print(editedAst));
+fs.writeFileSync('./configurations/graphql-cost-analysis/graphql-cost-analysis_yelp.graphql', graphql_1.print(editedAst));
 //# sourceMappingURL=generate_yelp_schema_graphql-cost-analysis.js.map

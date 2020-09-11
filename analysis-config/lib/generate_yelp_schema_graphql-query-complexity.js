@@ -39,45 +39,45 @@ var fs = __importStar(require("fs"));
  * directive @complexity(multipliers: [String!], value: Int!) on FIELD_DEFINITION
  */
 var costDirectiveDefinition = {
-    kind: "DirectiveDefinition",
+    kind: 'DirectiveDefinition',
     name: {
-        kind: "Name",
-        value: "complexity",
+        kind: 'Name',
+        value: 'complexity',
     },
     arguments: [
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "multipliers",
+                kind: 'Name',
+                value: 'multipliers',
             },
             type: {
-                kind: "ListType",
+                kind: 'ListType',
                 type: {
-                    kind: "NonNullType",
+                    kind: 'NonNullType',
                     type: {
-                        kind: "NamedType",
+                        kind: 'NamedType',
                         name: {
-                            kind: "Name",
-                            value: "String",
+                            kind: 'Name',
+                            value: 'String',
                         },
                     },
                 },
             },
         },
         {
-            kind: "InputValueDefinition",
+            kind: 'InputValueDefinition',
             name: {
-                kind: "Name",
-                value: "value",
+                kind: 'Name',
+                value: 'value',
             },
             type: {
-                kind: "NonNullType",
+                kind: 'NonNullType',
                 type: {
-                    kind: "NamedType",
+                    kind: 'NamedType',
                     name: {
-                        kind: "Name",
-                        value: "Int",
+                        kind: 'Name',
+                        value: 'Int',
                     },
                 },
             },
@@ -86,30 +86,30 @@ var costDirectiveDefinition = {
     repeatable: false,
     locations: [
         {
-            kind: "Name",
-            value: "FIELD_DEFINITION",
+            kind: 'Name',
+            value: 'FIELD_DEFINITION',
         },
     ],
 };
 /**
  * Directive describing the multipliers
  *
- * @cost(multipliers: ["limit"])
+ * @cost(multipliers: ['limit'])
  */
 var limitArgumentDirective = {
-    kind: "Argument",
+    kind: 'Argument',
     value: {
-        kind: "ListValue",
+        kind: 'ListValue',
         values: [
             {
-                kind: "StringValue",
-                value: "limit",
+                kind: 'StringValue',
+                value: 'limit',
             },
         ],
     },
     name: {
-        kind: "Name",
-        value: "multipliers",
+        kind: 'Name',
+        value: 'multipliers',
     },
 };
 /**
@@ -119,14 +119,14 @@ var limitArgumentDirective = {
  */
 function getValueDirective(complexity) {
     return {
-        kind: "Argument",
+        kind: 'Argument',
         value: {
-            kind: "IntValue",
+            kind: 'IntValue',
             value: "" + complexity,
         },
         name: {
-            kind: "Name",
-            value: "value",
+            kind: 'Name',
+            value: 'value',
         },
     };
 }
@@ -134,15 +134,15 @@ function getValueDirective(complexity) {
  * Utility function used to get the named type node from a type node
  */
 function unwrapTypeNode(node) {
-    if (node.kind === "NamedType") {
+    if (node.kind === 'NamedType') {
         return node;
     }
     else {
         return unwrapTypeNode(node.type);
     }
 }
-var ast = graphql_1.parse(fs.readFileSync("../graphql-schemas/schemas/yelp/yelp.graphql", "utf8"));
-var scalarNames = ["Int", "Float", "String", "ID", "Boolean"];
+var ast = graphql_1.parse(fs.readFileSync('../graphql-schemas/schemas/yelp/yelp.graphql', 'utf8'));
+var scalarNames = ['Int', 'Float', 'String', 'ID', 'Boolean'];
 // Add custom defined scalars to the scalarNames list
 graphql_1.visit(ast, {
     ScalarTypeDefinition: {
@@ -182,21 +182,21 @@ var editedAst = graphql_1.visit(ast, {
             var fieldName = node.name.value;
             var typeName = unwrapTypeNode(node.type).name.value;
             var complexityDirective = {
-                kind: "Directive",
+                kind: 'Directive',
                 name: {
-                    kind: "Name",
-                    value: "complexity",
+                    kind: 'Name',
+                    value: 'complexity',
                 },
                 arguments: [],
             };
             // Add a limit argument directive
-            if (parentTypeName === "Query") {
-                if (["business_match", "reviews", "search", "event_search"].includes(fieldName)) {
+            if (parentTypeName === 'Query') {
+                if (['business_match', 'reviews', 'search', 'event_search'].includes(fieldName)) {
                     complexityDirective.arguments.push(limitArgumentDirective);
                 }
             }
             // Add a limit argument directive
-            if (parentTypeName === "Business" && fieldName === "reviews") {
+            if (parentTypeName === 'Business' && fieldName === 'reviews') {
                 complexityDirective.arguments.push(limitArgumentDirective);
             }
             /**
@@ -230,5 +230,5 @@ var editedAst = graphql_1.visit(ast, {
         },
     },
 });
-fs.writeFileSync("./configurations/graphql-query-complexity/graphql-query-complexity_yelp.graphql", graphql_1.print(editedAst));
+fs.writeFileSync('./configurations/graphql-query-complexity/graphql-query-complexity_yelp.graphql', graphql_1.print(editedAst));
 //# sourceMappingURL=generate_yelp_schema_graphql-query-complexity.js.map

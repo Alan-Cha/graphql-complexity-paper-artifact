@@ -32,7 +32,7 @@ The sub-directory [query-response/](query-response/) contains an anonymized vers
 
 ## Run your own experiments
 
-To generate your own corpus of random queries for the Yelp and Github APIs:
+To generate your own corpus of random queries for the Yelp and GitHub APIs:
 
 1. Retrieve the schemas of the two APIs (see [graphql-schemas/](graphql-schemas/))
 2. Generate a corpus of random queries (see [query-gen/](query-gen/))
