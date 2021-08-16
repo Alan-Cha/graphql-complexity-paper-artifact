@@ -1,0 +1,70 @@
+analysisConfigurations:
+  resolvers:
+    'Query.business_match':
+      limitArguments: ['limit']
+      limitedFields: ['business']
+
+    'Query.reviews':
+      limitArguments: ['limit']
+      limitedFields: ['review']
+
+    'Query.search':
+      limitArguments: ['limit']
+      limitedFields: ['business']
+
+    'Query.event_search':
+      limitArguments: ['limit']
+      limitedFields: ['events']
+
+    'Business.reviews':
+      limitArguments: ['limit']
+
+    # Source: https://www.yelp.com/developers/documentation/v3/supported_locales
+    # 12 locales for English: en_AU, en_BE, en_CA, en_CH, en_GB, en_HK, en_IE, en_MY, e, _NZ, en_PH, en_SG, en_US
+    'Language.locales':
+      defaultLimit: 12
+
+    # Source: https://www.yelp.com/developers/documentation/v3/supported_locales
+    # 42 languages listed
+    'Reviews.possible_languages':
+      defaultLimit: 42
+
+    # Source: https://www.yelp.com/developers/documentation/v3/supported_locales
+    # Switzerland has 4 locales: de_CH, en_CH, fr_CH, it_CH
+    'Country.locales':
+      defaultLimit: 4
+
+    # Source: https://www.yelp.com/developers/documentation/v3/supported_locales
+    # 32 countries: Czech Republic, Denmark, Austria, Switzerland, Germany, Australia, Belgium, Canada,United Kingdom, Hong Kong, Republic of Ireland, Malaysia, New Zealand, Philippines,Singapore, United States, Argentina, Chile, Spain, Mexico, Finland, France, Italy, Japan, Norway, The Netherlands, Poland, Brazil, Portugal, Sweden, Turkey, Taiwan 
+    'Category.country_whitelist':
+      defaultLimit: 32
+    
+    # Source: https://www.yelp.com/developers/documentation/v3/supported_locales
+    # 32 countries: Czech Republic, Denmark, Austria, Switzerland, Germany, Australia, Belgium, Canada,United Kingdom, Hong Kong, Republic of Ireland, Malaysia, New Zealand, Philippines,Singapore, United States, Argentina, Chile, Spain, Mexico, Finland, France, Italy, Japan, Norway, The Netherlands, Poland, Brazil, Portugal, Sweden, Turkey, Taiwan 
+    'Category.country_blacklist':
+      defaultLimit: 32
+
+    # Does not have pagination 
+
+    'Query.phone_search':
+      limitedFields: ['business']
+      defaultLimit: 20
+
+    'Category.parent_categories':
+      defaultLimit: 10
+
+    'Business.categories':
+      defaultLimit: 10
+
+    'Business.hours':
+      defaultLimit: 20
+
+    'Business.special_hours':
+      defaultLimit: 20
+
+    'Hours.open':
+      defaultLimit: 20
+
+    'Query.categories':
+      limitedFields: ['category']
+      defaultLimit: 1576
