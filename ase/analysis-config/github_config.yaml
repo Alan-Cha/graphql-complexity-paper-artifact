@@ -1,0 +1,57 @@
+analysisConfigurations:
+  resolvers:
+    # All resolver functions returning "Connection"s have "first" and "last"
+    # multiplier arguments: 
+    '/.+Connection$/':
+      limitArguments: [first, last]
+      limitedFields: ['edges', 'nodes']
+
+    # Configuration of fields returning lists of objects without multiplier args:
+    '*.marketplaceCategories':
+      defaultLimit: 35 # obtained from querying for it
+    '*.codesOfConduct':
+      defaultLimit: 2
+    '*.licenses':
+      defaultLimit: 13 # obtained from querying for it
+    '*.fundingLinks':
+      defaultLimit: 16 # https://docs.github.com/en/github/administering-a-repository/displaying-a-sponsor-button-in-your-repository
+    # NESTED - BLOW-UP LIKELY!
+    '*.relatedTopics':
+      defaultLimit: 10
+      limitArguments: [first]
+    '*.limitations':
+      defaultLimit: 4 # ranges from 2 - 4, determined from querying {licenses{ limitations{ description}}}
+    '*.conditions': 
+      defaultLimit: 5 # ranges from 0 - 5, determined from querying {licenses{ conditions{ description}}}
+    '*.permissions': 
+      defaultLimit: 5 # ranges from 4 - 5, determined from querying {licenses{ permissions{ description}}}
+    '*.suggestedReviewers':
+      defaultLimit: 3 # ranges from 0 - 3, determined from checking a number of pull requests on popular repositories
+    '*.ranges':
+      defaultLimit: 10 # unbounded, greater than or equal to 1070, determined from looking at nodejs/node src/node_http2.cc
+    '*.entries':
+      defaultLimit: 10 # unbounded, greater than or equal to 39, number of files on the root level
+    '*.reactionGroups':
+      defaultLimit: 8 # exactly 8, the number of emojis that you can use to react with
+    '*.textMatches':
+      defaultLimit: 3 # ranges from 1 - 3, determined from querying {search{ edges{ textMatches{ fragment}}}} of different query strings
+    '*.contexts':
+      defaultLimit: 10 # unbounded, number of commit checks
+    '*.highlights':
+      defaultLimit: 3 # ranges from 1 - 3, determined from querying {search(query:"google", type: REPOSITORY, first: 100){ edges{ textMatches{ highlights {text}}}}}
+    '*.identifiers':
+      defaultLimit: 2 # exactly 2, determined from querying {securityAdvisories (first: 30) {nodes {identifiers {value}}}}, seems to be two different encodings
+    '*.references':
+      defaultLimit: 3 # ranges from 1 - 3, determined from querying {securityAdvisories (first: 30) {nodes {references {url}}}}
+    'Gist.files':
+      defaultLimit: 10 # ranges from 0 - 10, says so in the documentation (limit argument has a default value of 10)
+    '*.contributionDays':
+      defaultLimit: 7 # exactly 7, determined from querying {user(login: "thejibz") {contributionsCollection {contributionCalendar {weeks {contributionDays {date}}}}}}
+    '*.weeks':
+      defaultLimit: 53 # exactly 53, determined from querying {user(login: "thejibz") {contributionsCollection {contributionCalendar {weeks{ firstDay}}}}} and multiple other users
+    '*.months':
+      defaultLimit: 13 # exactly 13, determined from querying {user(login: "thejibz") {contributionsCollection {contributionCalendar {months{ firstDay}}}}} and multiple other users
+    # commit-, issue-, pullRequest-, pullRequestReview- ...
+    '*./.*ContributionsByRepository$/':
+      defaultLimit: 25 # the set default value - for all of them
+      limitArguments: ['maxRepositories']
