@@ -1,39 +1,17 @@
-# Summary
+# GraphQL Research Artifacts
 
-Welcome to the artifact for ESEC/FSE'20 research paper, ["A Principled Approach to GraphQL Query Cost Analysis"](https://github.com/Alan-Cha/fse20/blob/master/submissions/functional/FSE-24/graphql-paper.pdf).
+This repository contains the artifacts for the research papers:
 
-## Table of contents
+* ["A Principled Approach to GraphQL Query Cost Analysis"](https://github.com/Alan-Cha/fse20/blob/master/submissions/functional/FSE-24/graphql-paper.pdf), (ESEC/FSE'20)
 
-Each sub-directories contains its own `README.md` files that clarifies its contents.
+> The landscape of web APIs is evolving to meet new client requirements and to facilitate how providers fulfill them. A recent web API model is GraphQL, which is both a query language and a runtime. Using GraphQL, client queries express the data they want to retrieve or mutate, and servers respond with exactly those data or changes. GraphQL's expressiveness is risky for service providers because clients can succinctly request stupendous amounts of data, and responding to overly complex queries can be costly or disrupt service availability. Recent empirical work has shown that many service providers are at risk. Using traditional API management methods is not sufficient, and practitioners lack principled means of estimating and measuring the cost of the GraphQL queries they receive. 
+>
+> In this work, we present a linear-time GraphQL query analysis that can measure the cost of a query without executing it. Our approach can be applied in a separate API management layer and used with arbitrary GraphQL backends. In contrast to existing static approaches, our analysis supports common GraphQL conventions that affect query cost, and our analysis is provably correct based on our formal specification of GraphQL semantics. 
+>
+> We demonstrate the potential of our approach using a novel GraphQL query-response corpus for two commercial GraphQL APIs. Our query analysis consistently obtains upper cost bounds, tight enough relative to the true response sizes to be actionable for service providers. In contrast, existing static GraphQL query analyses exhibit over-estimates and under-estimates because they fail to support GraphQL conventions. 
 
-| Item                                          | Description                                                                                                                             | Location                                     |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- |
-| GraphQL query-response corpus                 | The 10,000 unique (anonymized) query-response pairs from GitHub and Yelp | [query-response/](query-response/)           |
-| Configuration of static analyses              | Our configuration of the static analyses (our own and those we compared against)                                                        | [analysis-config/](analysis-config/)         |
-| Complexity measures for queries and responses | Data used to generate Figures 5 and 6, plus charts generator                                                                            | [measured-complexity/](measured-complexity/) |
-| Novel GraphQL query generator                 | Configuration details and link to the open-source tool                                                                                  | [query-gen/](query-gen/)                     |
-| GraphQL schemas                               | GraphQL schemas for GitHub and Yelp at the time of the study                                                                            | [graphql-schemas/](graphql-schemas/)         |
-| Verification                                  | Rerun the open-source library evaluation portion of the experiment                                                                      | [verification/](verification/)               |
+* "Learning GraphQL Query Cost", (ASE'21)
 
-Institutional policy precludes sharing the prototype of our own static analysis.
-We have described the algorithms in enough detail to permit an independent implementation.
-
-# How to use the artifact
-
-## Verification
-
-The sub-directory [verification/](verification/) contains a script that will recreate the open-source evaluation portion of the experiment.
-
-## Reproducing the paper results
-
-The sub-directory [measured-complexity/](measured-complexity/) contains all the data (complexity measures for the open-source libraries and our own solution), and a tool to regenerate the plots.
-
-The sub-directory [query-response/](query-response/) contains an anonymized version of the corpus used for these experiments.
-
-## Run your own experiments
-
-To generate your own corpus of random queries for the Yelp and GitHub APIs:
-
-1. Retrieve the schemas of the two APIs (see [graphql-schemas/](graphql-schemas/))
-2. Generate a corpus of random queries (see [query-gen/](query-gen/))
-3. Compute the complexity of the queries with three open-source libraries (see [analysis-config/](analysis-config/))
+> GraphQL is a query language for APIs and a runtime for executing those queries, fetching the requested data from existing microservices, REST APIs, databases, or other sources. Its expressiveness and its flexibility have made it an attractive candidate for API providers in many industries especially through the web. A major drawback to blindly~servicing a client's query in GraphQL is thatthe cost of a query can be unexpectedly large, creating computation and resource overload for the provider, and API rate-limit overages and infrastructure overload for the client.
+>
+> To mitigate these drawbacks, it is necessary to efficiently estimate the cost of a query before executing it. Estimating query cost is challenging because GraphQL queries have a nested structure, GraphQL APIs follow different design conventions, and the underlying data sources are hidden. Estimates based on worst-case static query analysis have had limited success because they tend to grossly overestimate cost. We propose a machine-learning approach to efficiently and accurately estimate the query cost. We also demonstrate the power of this approach by testing it on query-response data from publicly available commercial APIs. Our framework is efficient and predicts query costs with high accuracy, consistently outperforming the static analysis by a large margin.
