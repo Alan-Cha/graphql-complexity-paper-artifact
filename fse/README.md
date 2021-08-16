@@ -1,6 +1,6 @@
 # Summary
 
-Welcome to the artifact for ESEC/FSE'20 research paper, ["A Principled Approach to GraphQL Query Cost Analysis"](https://github.com/Alan-Cha/fse20/blob/master/submissions/functional/FSE-24/graphql-paper.pdf).
+Welcome to the artifact for ESEC/FSE'20 research paper, ["A Principled Approach to GraphQL Query Cost Analysis"](https://arxiv.org/abs/2009.05632).
 
 ## Table of contents
 

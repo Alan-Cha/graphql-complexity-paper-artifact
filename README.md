@@ -2,7 +2,7 @@
 
 This repository contains the artifacts for the research papers:
 
-* ["A Principled Approach to GraphQL Query Cost Analysis"](https://github.com/Alan-Cha/fse20/blob/master/submissions/functional/FSE-24/graphql-paper.pdf), (ESEC/FSE'20)
+* ["A Principled Approach to GraphQL Query Cost Analysis"](https://arxiv.org/abs/2009.05632), (ESEC/FSE'20)
 
 > The landscape of web APIs is evolving to meet new client requirements and to facilitate how providers fulfill them. A recent web API model is GraphQL, which is both a query language and a runtime. Using GraphQL, client queries express the data they want to retrieve or mutate, and servers respond with exactly those data or changes. GraphQL's expressiveness is risky for service providers because clients can succinctly request stupendous amounts of data, and responding to overly complex queries can be costly or disrupt service availability. Recent empirical work has shown that many service providers are at risk. Using traditional API management methods is not sufficient, and practitioners lack principled means of estimating and measuring the cost of the GraphQL queries they receive. 
 >
